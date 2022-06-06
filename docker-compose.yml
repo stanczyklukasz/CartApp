@@ -16,7 +16,7 @@ services:
       dockerfile: ./docker/php/Dockerfile
     container_name: cartapp
     volumes:
-      - ./:/var/www/backend_app
+      - ./:/var/www/cartapp
     ports:
       - "8000:80"
     extra_hosts:

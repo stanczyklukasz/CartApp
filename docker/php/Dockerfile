@@ -1,6 +1,6 @@
 FROM php:8.1.6-apache-buster
 
-WORKDIR /var/www/gogcartapp/
+WORKDIR /var/www/cartapp/
 
 RUN a2enmod rewrite
 
@@ -36,13 +36,13 @@ RUN pecl install apcu-5.1.21 && docker-php-ext-enable apcu
 
 COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
 
-COPY ./docker/php/vhost.conf /etc/apache2/sites-available/gogcartapp.conf
+COPY ./docker/php/vhost.conf /etc/apache2/sites-available/cartapp.conf
 
-RUN a2ensite gogcartapp
+RUN a2ensite cartapp
 
 COPY ./docker/php/custom-php.ini $PHP_INI_DIR/conf.d/
 
-COPY . /var/www/gogcartapp
+COPY . /var/www/cartapp
 
 RUN composer install
 
