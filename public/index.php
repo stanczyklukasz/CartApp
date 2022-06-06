@@ -1,9 +1,11 @@
 <?php
 
-use App\Kernel;
+declare(strict_types=1);
+
+use App\Shared\Infrastructure\SymfonyKernel;
 
 require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
 
 return function (array $context) {
-    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
+    return new SymfonyKernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
 };
