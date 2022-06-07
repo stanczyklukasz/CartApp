@@ -95,4 +95,30 @@ class Cart
     {
         $this->items = [];
     }
+
+    public function hasItemWithId(int $itemId): bool
+    {
+        foreach ($this->items as $item) {
+            if ($item->getExternalId() === $itemId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function removeItem(int $itemId): void
+    {
+        foreach ($this->items as $key => $item) {
+            if ($item->getExternalId() === $itemId) {
+                unset($this->items[$key]);
+            }
+        }
+
+        if (!empty($this->items)) {
+            $lastItem = reset($this->items);
+
+            $this->items[array_search($lastItem, $this->items)] = clone $lastItem;
+        }
+    }
 }

@@ -7,11 +7,13 @@ namespace App\Cart\UI;
 use App\Cart\Application\Exception\CartNotFoundException;
 use App\Cart\Application\Exception\ProductNotAddedException;
 use App\Cart\Application\Exception\ProductNotFoundException;
+use App\Cart\Application\Exception\ProductInCartNotFoundException;
 use App\Cart\Application\UseCase\AddProductToCart;
 use App\Cart\Application\UseCase\AddProductToCartModel;
 use App\Cart\Application\UseCase\CreateCart;
+use App\Cart\Application\UseCase\RemoveProductFromCart;
+use App\Cart\Application\UseCase\RemoveProductFromCartModel;
 use App\Shared\Infrastructure\Exception\AppException;
-use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use OpenApi\Attributes\Tag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +28,8 @@ class CartApiController extends AbstractController
 {
     public function __construct(
         private CreateCart $createCart,
-        private AddProductToCart $addProductToCart
+        private AddProductToCart $addProductToCart,
+        private RemoveProductFromCart $removeProductFromCart
     ) {
     }
 
@@ -81,5 +84,38 @@ class CartApiController extends AbstractController
         }
 
         return $this->json("Product has been added");
+    }
+
+    /**
+     * @OA\RequestBody(
+     *     @OA\JsonContent(
+     *        type="object",
+     *        @OA\Property(property="productId", type="number", example=1)
+     *     ),
+     * )
+     * @OA\Response(
+     *     response=200,
+     *     description="Add product to the cart",
+     *     @OA\JsonContent(
+     *        type="string",
+     *        example="Product has been removed from the cart"
+     *     )
+     * )
+     */
+    #[Route("/api/cart/{uuid}/remove-product", name: "api_cart_remove_product", methods: ["DELETE"])]
+    public function removeProduct(string $uuid, Request $request): JsonResponse
+    {
+        try {
+            $this->removeProductFromCart->execute(
+                RemoveProductFromCartModel::fromJson(
+                    $uuid,
+                    $request->getContent()
+                )
+            );
+        } catch (CartNotFoundException | ProductInCartNotFoundException$e) {
+            throw new AppException($e->getMessage(), Response::HTTP_NOT_FOUND);
+        }
+
+        return $this->json("Product has been removed");
     }
 }

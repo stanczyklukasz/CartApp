@@ -6,4 +6,8 @@ namespace App\Cart\Application\Exception;
 
 class ProductNotAddedException extends \Exception
 {
+    public function __construct(int $id)
+    {
+        parent::__construct("Product with id: {$id} not found");
+    }
 }
