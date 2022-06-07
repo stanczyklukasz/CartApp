@@ -28,6 +28,5 @@ final class Version20220606191908 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('DROP TABLE product');
-        $this->addSql('DROP TABLE messenger_messages');
     }
 }

@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Tag(name: "Product")]
-class ProductsApiController extends AbstractController
+class ProductApiController extends AbstractController
 {
     public function __construct(
         private ProductQuery $productQuery,
