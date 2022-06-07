@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Cart;
+namespace App\Tests\Cart\Application;
 
 use App\Cart\Application\UseCase\CreateCart;
 use App\Cart\Domain\Cart;
-use App\Tests\Cart\Utils\InMemoryCartRepository;
+use App\Tests\Cart\Application\Utils\InMemoryCartRepository;
 use PHPUnit\Framework\TestCase;
 
 class CreateCartTest extends TestCase
@@ -19,7 +19,7 @@ class CreateCartTest extends TestCase
 
         $newCartUuid = $createCart->execute();
 
-        $this->assertNull($cartRepository->getCartByUuid('invalid-uuid'));
-        $this->assertInstanceOf(Cart::class, $cartRepository->getCartByUuid($newCartUuid));
+        $this->assertNull($cartRepository->findByUuid('invalid-uuid'));
+        $this->assertInstanceOf(Cart::class, $cartRepository->findByUuid($newCartUuid));
     }
 }

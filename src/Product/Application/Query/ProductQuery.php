@@ -11,4 +11,6 @@ interface ProductQuery
 {
     /** @return Product[] */
     public function getPaginatedList(int $page): array;
+
+    public function getProductById(int $id): ?Product;
 }

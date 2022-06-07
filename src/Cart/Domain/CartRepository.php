@@ -8,4 +8,6 @@ namespace App\Cart\Domain;
 interface CartRepository
 {
     public function save(Cart $cart, bool $flush = true): void;
+
+    public function findByUuid(string $uuid): ?Cart;
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Cart\Domain;
 
+use App\Cart\Domain\Exception\MoreThan10SameItemsException;
+use App\Cart\Domain\Exception\MoreThan3UniqueItemsException;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
 use Ramsey\Uuid\Uuid;
@@ -33,16 +35,21 @@ class Cart
         return $this->uuid;
     }
 
+    /**
+     * @throws MoreThan3UniqueItemsException
+     * @throws MoreThan10SameItemsException
+     */
     public function addItem(CartItem $newItem): void
     {
         $currentItem = $this->getCurrentItem($newItem);
 
         if (!$currentItem) {
-            //nie mamy takiego przedmiotu w koszyku
-
-            //sprawdzamy czy możemy dodać go do koszyka
             if (count($this->items) >= self::MAX_UNIQUE_ITEMS) {
-                throw new \Exception("You can add maximum" . self::MAX_UNIQUE_ITEMS . " unique items to cart");
+                throw new MoreThan3UniqueItemsException(self::MAX_UNIQUE_ITEMS);
+            }
+
+            if ($newItem->getQuantity() >= self::MAX_STACK_ITEMS) {
+                throw new MoreThan10SameItemsException(self::MAX_STACK_ITEMS);
             }
 
             $this->items[] = $newItem;
@@ -50,8 +57,14 @@ class Cart
         }
 
         if ($currentItem->getQuantity() >= self::MAX_STACK_ITEMS) {
-            throw new \Exception("You can add maximum " . self::MAX_STACK_ITEMS . " items to stack");
+            throw new MoreThan10SameItemsException(self::MAX_STACK_ITEMS);
         }
+
+        $currentItem->increaseQuantity();
+
+        $currentItemKey = array_search($currentItem, $this->items);
+
+        $this->items[$currentItemKey] = clone $currentItem;
     }
 
     private function getCurrentItem(CartItem $newItem): ?CartItem
@@ -64,6 +77,22 @@ class Cart
                 break;
             }
         }
+
         return $currentItem;
+    }
+
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+
+    public function setItems(array $array): void
+    {
+        $this->items = $array;
+    }
+
+    public function clearItems(): void
+    {
+        $this->items = [];
     }
 }

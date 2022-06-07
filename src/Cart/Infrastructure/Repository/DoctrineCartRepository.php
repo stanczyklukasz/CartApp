@@ -23,4 +23,9 @@ class DoctrineCartRepository implements CartRepository
             $this->entityManager->flush();
         }
     }
+
+    public function findByUuid(string $uuid): ?Cart
+    {
+        return $this->entityManager->getRepository(Cart::class)->find($uuid);
+    }
 }

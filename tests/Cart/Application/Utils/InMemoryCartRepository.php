@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Cart\Utils;
+namespace App\Tests\Cart\Application\Utils;
 
 use App\Cart\Domain\Cart;
 use App\Cart\Domain\CartRepository;
@@ -17,7 +17,7 @@ class InMemoryCartRepository implements CartRepository
         $this->items[$cart->getUuid()->toString()] = $cart;
     }
 
-    public function getCartByUuid(string $uuid): ?Cart
+    public function findByUuid(string $uuid): ?Cart
     {
         return $this->items[$uuid] ?? null;
     }

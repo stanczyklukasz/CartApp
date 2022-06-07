@@ -9,6 +9,8 @@ use App\Product\Application\Query\ProductQuery;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
+use function Doctrine\DBAL\Query\QueryBuilder;
+
 class DbalProductQuery implements ProductQuery
 {
     private const MAX_RESULTS = 3;
@@ -40,5 +42,29 @@ class DbalProductQuery implements ProductQuery
         }
 
         return $response;
+    }
+
+    public function getProductById(int $id): ?Product
+    {
+        $qb = $this->connection->createQueryBuilder();
+
+        $product = $qb
+            ->select('p.id')
+            ->addSelect('p.title')
+            ->addSelect('p.price')
+            ->from('product', 'p')
+            ->where(
+                $qb->expr()->eq('p.id', ':id')
+            )
+            ->setParameter('id', $id)
+            ->executeQuery()
+            ->fetchAssociative()
+        ;
+
+        if (empty($product)) {
+            return null;
+        }
+
+        return Product::fromArray($product);
     }
 }
