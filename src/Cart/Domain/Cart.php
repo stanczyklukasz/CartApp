@@ -18,7 +18,7 @@ class Cart
     private const MAX_STACK_ITEMS = 10;
 
     #[ORM\Id]
-    #[ORM\Column(name: "id", type: "uuid", unique: true)]
+    #[ORM\Column(name: "uuid", type: "uuid", unique: true)]
     private UuidInterface $uuid;
 
     /** @var CartItem[] */
