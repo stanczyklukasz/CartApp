@@ -39,4 +39,14 @@ class CartItem
     {
         return $this->price;
     }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getGeneralAmount(): int
+    {
+        return $this->quantity * $this->price;
+    }
 }

@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace App\Cart\UI;
 
+use App\Cart\Application\Dto\CartSummary;
 use App\Cart\Application\Exception\CartNotFoundException;
+use App\Cart\Application\Exception\ProductInCartNotFoundException;
 use App\Cart\Application\Exception\ProductNotAddedException;
 use App\Cart\Application\Exception\ProductNotFoundException;
-use App\Cart\Application\Exception\ProductInCartNotFoundException;
+use App\Cart\Application\Query\CartQuery;
 use App\Cart\Application\UseCase\AddProductToCart;
 use App\Cart\Application\UseCase\AddProductToCartModel;
 use App\Cart\Application\UseCase\CreateCart;
 use App\Cart\Application\UseCase\RemoveProductFromCart;
 use App\Cart\Application\UseCase\RemoveProductFromCartModel;
 use App\Shared\Infrastructure\Exception\AppException;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use OpenApi\Attributes\Tag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +32,8 @@ class CartApiController extends AbstractController
     public function __construct(
         private CreateCart $createCart,
         private AddProductToCart $addProductToCart,
-        private RemoveProductFromCart $removeProductFromCart
+        private RemoveProductFromCart $removeProductFromCart,
+        private CartQuery $cartQuery
     ) {
     }
 
@@ -117,5 +121,19 @@ class CartApiController extends AbstractController
         }
 
         return $this->json("Product has been removed");
+    }
+
+    /**
+     * @OA\Response(
+     *     response=200,
+     *     description="Return cart with items",
+     *     @Model(type=CartSummary::class)
+     *
+     * )
+     */
+    #[Route("/api/cart/{uuid}", name: "api_cart_remove_product", methods: ["GET"])]
+    public function getCart(string $uuid): JsonResponse
+    {
+        return $this->json($this->cartQuery->getCartSummary($uuid));
     }
 }
