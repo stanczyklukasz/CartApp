@@ -7,9 +7,6 @@ namespace App\Product\Infrastructure\Query;
 use App\Product\Application\Dto\Product;
 use App\Product\Application\Query\ProductQuery;
 use Doctrine\DBAL\Connection;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-
-use function Doctrine\DBAL\Query\QueryBuilder;
 
 class DbalProductQuery implements ProductQuery
 {
@@ -29,11 +26,10 @@ class DbalProductQuery implements ProductQuery
             ->addSelect('p.title')
             ->addSelect('p.price')
             ->from('product', 'p')
-            ->setFirstResult(self::MAX_RESULTS * ($page-1))
+            ->setFirstResult(self::MAX_RESULTS * ($page - 1))
             ->setMaxResults(self::MAX_RESULTS)
             ->executeQuery()
-            ->fetchAllAssociative()
-        ;
+            ->fetchAllAssociative();
 
         $response = [];
 
@@ -58,8 +54,7 @@ class DbalProductQuery implements ProductQuery
             )
             ->setParameter('id', $id)
             ->executeQuery()
-            ->fetchAssociative()
-        ;
+            ->fetchAssociative();
 
         if (empty($product)) {
             return null;
