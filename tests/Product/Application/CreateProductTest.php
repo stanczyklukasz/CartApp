@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Product;
+namespace App\Tests\Product\Application;
 
 use App\Product\Application\Exception\ProductWithSameTitleExistsException;
 use App\Product\Application\UseCase\CreateProduct;
 use App\Product\Application\UseCase\CreateProductModel;
 use App\Product\Domain\Entity\Product;
 use App\Product\Domain\Entity\ProductRepository;
-use App\Tests\Product\Utils\InMemoryProductRepository;
+use App\Tests\Product\Application\Utils\InMemoryProductRepository;
 use PHPUnit\Framework\TestCase;
 
 class CreateProductTest extends TestCase
